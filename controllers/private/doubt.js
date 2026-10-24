@@ -1,10 +1,12 @@
 import express from "express"
 import doubtModel from "../../models/Doubt.js"
 import router from "../public/user.js"
+import { createDoubtValidator } from "../../validators/doubtValidator.js"
+import { validation } from "../../validators/userValidator.js"
 
 const Router = express.Router()
 
-router.post("/create", async (req,res) =>{
+router.post("/create",createDoubtValidator,validation, async (req,res) =>{
     try {
         let userId = req.user.id
 
