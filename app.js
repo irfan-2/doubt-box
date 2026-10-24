@@ -3,7 +3,9 @@ import dotenv from "dotenv"
 
 dotenv.config()
 import "./config/database.js"
+import authMiddleware from "./middleware/auth.js"
 import publicUserRouter from "./controllers/public/user.js"
+import privateDoubtRouter from "./controllers/private/doubt.js"
 
 const app = express()
 
@@ -18,6 +20,8 @@ app.get("/health", (req,res) =>{
 })
 
 app.use("/user", publicUserRouter)
+app.use(authMiddleware)
+app.use("create", privateDoubtRouter)
 
 app.listen(port, ()=>{
     console.log("Server is running");
