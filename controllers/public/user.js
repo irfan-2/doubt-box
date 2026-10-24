@@ -1,6 +1,7 @@
 import express from "express"
 import bcrypt from "bcrypt"
 import userModel from "../../models/User.js"
+import tokenize from "../../utils/token.js"
 
 const router = express.Router()
 
@@ -55,7 +56,17 @@ router.post("/login", async (req,res) =>{
                 "msg" : "Incorrect credentials"
             })
         }
-        
+
+        let payload = {
+            id: checkIfExists._id
+        }
+
+        let token = await tokenize(payload)
+
+        res.status(200).json({
+            "msg" : "Logged in successfully", token
+        })
+
 
     } catch (error) {
         console.log(error.message);
