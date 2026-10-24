@@ -1,5 +1,6 @@
 import express from "express"
 import doubtModel from "../../models/Doubt.js"
+import router from "../public/user.js"
 
 const Router = express.Router()
 
@@ -19,6 +20,46 @@ router.post("/create", async (req,res) =>{
         return res.status(201).json({
             "msg" : "Doubt posted successfully", doubt
         }) 
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            "msg" : "internal server error"
+        })
+    }
+})
+
+router.get("/get", async (req,res) =>{
+    try {
+        const doubts = await doubtModel.find()
+                                       .populate("user_id" ,"name email -_id")
+                                       .sort({createdAt: -1})
+
+        return res.status(200).json({
+            "msg" : "All doubts fetched successfully",
+            total: doubts.length,
+            doubts
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            "msg" : "internal server error"
+        })
+    }
+})
+
+router.get("/my-doubts", async (req,res) =>{
+    try {
+        const userId = req.user.id 
+
+        const doubts = await doubtModel.find({user_id: userId})
+        .sort({createdAt: -1})
+
+        return res.status(200).json({
+            "msg" : "Here are all the doubts you posted",
+            total: doubts.length,
+            doubts
+        })
 
     } catch (error) {
         console.log(error);
